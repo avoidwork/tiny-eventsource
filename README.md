@@ -1,6 +1,15 @@
 # tiny-eventsource
 Tiny EventSource for API servers.
 
+## API
+__constructor__("initializing", "Hello World!")
+
+Creates an `EventSource` instance with n+ messages to be transmitted on successful connection.
+
+__send__({..., "stuff": "other stuff});
+
+Sends a message over an existing `EventSource`.
+
 ## Example
 ```javascript
 const streams = new Map(),
@@ -17,7 +26,7 @@ module.exports = (req, res) => {
 
 		streams.get(id).init(req, res);
 	} else {
-		res.statusCode = 400;
+		res.statusCode = 401;
 		res.writeHead(res.statusCode, {headers: {"cache-control": "no-cache, must re-validate"}})
 		res.end(STATUS_CODES[res.statusCode]);
 	}
