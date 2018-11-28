@@ -9,7 +9,7 @@ function transmit (res, arg, id) {
 		res.write(`event: ${arg.event}\n`);
 	}
 
-	res.write(`data: ${JSON.stringify(arg.data)}\n\n`);
+	res.write(`data: ${arg.data}\n\n`);
 }
 
 class EventSource extends EventEmitter {

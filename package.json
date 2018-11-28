@@ -1,6 +1,6 @@
 {
   "name": "tiny-eventsource",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tiny EventSource for API servers",
   "main": "index.js",
   "scripts": {
