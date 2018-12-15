@@ -16,6 +16,7 @@ class EventSource extends EventEmitter {
 	constructor (...args) {
 		super();
 		this.initial = [...args];
+		this.setMaxListeners(0);
 	}
 
 	init (req, res) {
