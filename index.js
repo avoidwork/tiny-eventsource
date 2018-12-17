@@ -25,12 +25,13 @@ function transmit (res, arg, id) {
 
 class EventSource extends EventEmitter {
 	constructor (config, ...args) {
-		const str = typeof config === "string";
+		const str = typeof config === "string",
+			obj = !str && config !== void 0 && config instanceof Object;
 
 		super();
 		this.heartbeat = {
-			ms: !str && typeof config.ms === "number" ? config.ms : 0,
-			msg: !str && typeof config.msg === "string" ? config.msg : "ping"
+			ms: obj && typeof config.ms === "number" ? config.ms : 0,
+			msg: obj && typeof config.msg === "string" ? config.msg : "ping"
 		};
 		this.initial = str ? [config, ...args] : [...args];
 		this.setMaxListeners(0);

@@ -3,15 +3,20 @@ module.exports = function (grunt) {
 		eslint: {
 			target: [
 				"Gruntfile.js",
+				"test/**.js",
 				"index.js"
 			]
+		},
+		nodeunit: {
+			all: ["test/*.js"]
 		}
 	});
 
 	// tasks
 	grunt.loadNpmTasks("grunt-eslint");
+	grunt.loadNpmTasks("grunt-contrib-nodeunit");
 
 	// aliases
-	grunt.registerTask("test", ["eslint"]);
+	grunt.registerTask("test", ["eslint", "nodeunit"]);
 	grunt.registerTask("default", ["test"]);
 };
