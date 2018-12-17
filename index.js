@@ -2,6 +2,17 @@
 
 const {EventEmitter} = require("events");
 
+function heartbeat (arg) {
+	if (arg.heartbeat.ms > 0) {
+		setTimeout(() => {
+			if (arg.listenerCount("data") > 0) {
+				arg.send(arg.heartbeat.msg);
+				heartbeat(arg);
+			}
+		}, arg.heartbeat.ms);
+	}
+}
+
 function transmit (res, arg, id) {
 	res.write(`id: ${arg.id || id}\n`);
 
@@ -15,6 +26,10 @@ function transmit (res, arg, id) {
 class EventSource extends EventEmitter {
 	constructor (...args) {
 		super();
+		this.heartbeat = {
+			ms: 0,
+			msg: "ping"
+		};
 		this.initial = [...args];
 		this.setMaxListeners(0);
 	}
@@ -35,6 +50,10 @@ class EventSource extends EventEmitter {
 		this.on("data", fn);
 		req.on("close", () => this.off("data", fn));
 		this.initial.forEach(i => this.send(i));
+
+		if (this.heartbeat.ms > 0) {
+			heartbeat(this);
+		}
 
 		return this;
 	}
