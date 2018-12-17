@@ -1,4 +1,7 @@
 # tiny-eventsource
+
+[![build status](https://secure.travis-ci.org/avoidwork/tiny-eventsource.svg)](https://travis-ci.org/avoidwork/tiny-eventsource)
+
 Tiny EventSource for API servers.
 
 ## Attributes
