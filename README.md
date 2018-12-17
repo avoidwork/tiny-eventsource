@@ -14,7 +14,7 @@ __heartbeat.msg__ *string*
 Message sent if `heartbeat.ms` is greater than 0.
 
 ## API
-__constructor__([...msgs])
+__constructor__([heartbeat], [...msgs])
 
 Creates an `EventSource` instance with optional messages to be transmitted on successful connection.
 
@@ -38,8 +38,7 @@ module.exports = (req, res) => {
 		let stream = streams.get(id);
 
 		if (stream === void 0) {
-			stream = eventsource("connected");
-			stream.heartbeat.ms = 2e4;
+			stream = eventsource({ms: 2e4}, "connected");
 			streams.set(id, stream);
 		}
 
