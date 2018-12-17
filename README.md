@@ -35,14 +35,12 @@ const streams = new Map(),
 module.exports = (req, res) => {
 	if (req.isAuthenticated()) {
 		const id = req.user.id;
-		let stream = streams.get(id);
 
-		if (stream === void 0) {
-			stream = eventsource({ms: 2e4}, "connected");
-			streams.set(id, stream);
+		if (!streams.has(id)) {
+			streams.set(id, eventsource({ms: 2e4}, "connected"));
 		}
 
-		stream.init(req, res);
+		streams.get(id).init(req, res);
 	} else {
 		res.statusCode = 401;
 		res.writeHead(res.statusCode, {headers: {"cache-control": "no-cache, must re-validate"}})
