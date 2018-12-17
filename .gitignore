@@ -28,4 +28,3 @@ node_modules
 
 .idea
 yarn.lock
-.travis.yml
