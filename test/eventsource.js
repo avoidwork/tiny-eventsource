@@ -26,7 +26,7 @@ module.exports = {
 			test.equal(this.eventsource.initial.length, 1, "Should be '1'");
 			test.equal(this.eventsource.initial[0], "Hello World!", "Should be 'Hello World!'");
 			test.equal(this.eventsource.listenerCount("data"), 0, "Should be '0'");
-			this.eventsource.on("data", () => console.log("Hello World!"));
+			this.eventsource.on("data", arg => console.log(arg));
 			test.equal(this.eventsource.listenerCount("data"), 1, "Should be '1'");
 			test.done();
 		}
