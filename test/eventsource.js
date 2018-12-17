@@ -4,15 +4,20 @@ const path = require("path"),
 module.exports = {
 	heartbeat: {
 		setUp: function (done) {
-			this.eventsource = eventsource({ms: 1e4}, "Hello World!");
+			this.ms = 250;
+			this.eventsource = eventsource({ms: this.ms}, "Hello World!");
 			done();
 		},
 		test: function (test) {
-			test.expect(3);
-			test.equal(this.eventsource.heartbeat.ms, 1e4, `Should be '${1e4}'`);
+			test.expect(4);
+			test.equal(this.eventsource.heartbeat.ms, this.ms, `Should be '${this.ms}'`);
 			test.equal(this.eventsource.initial.length, 1, "Should be '1'");
 			test.equal(this.eventsource.initial[0], "Hello World!", "Should be 'Hello World!'");
-			test.done();
+			this.eventsource.init();
+			this.eventsource.on("data", arg => {
+				test.equal(arg.data, "ping", "Should be 'ping'");
+				test.done();
+			});
 		}
 	},
 	listeners: {

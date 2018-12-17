@@ -41,17 +41,21 @@ class EventSource extends EventEmitter {
 		let id = -1;
 		const fn = arg => transmit(res, arg, ++id);
 
-		req.socket.setTimeout(0);
-		req.socket.setNoDelay(true);
-		req.socket.setKeepAlive(true);
+		if (req !== void 0) {
+			req.socket.setTimeout(0);
+			req.socket.setNoDelay(true);
+			req.socket.setKeepAlive(true);
+			req.on("close", () => this.off("data", fn));
+		}
 
-		res.statusCode = 200;
-		res.setHeader("content-type", "text/event-stream");
-		res.setHeader("cache-control", "no-cache");
-		res.setHeader("connection", "keep-alive");
+		if (res !== void 0) {
+			res.statusCode = 200;
+			res.setHeader("content-type", "text/event-stream");
+			res.setHeader("cache-control", "no-cache");
+			res.setHeader("connection", "keep-alive");
+			this.on("data", fn);
+		}
 
-		this.on("data", fn);
-		req.on("close", () => this.off("data", fn));
 		this.initial.forEach(i => this.send(i));
 
 		if (this.heartbeat.ms > 0) {
