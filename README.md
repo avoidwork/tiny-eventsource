@@ -5,15 +5,21 @@
 Tiny EventSource for API servers.
 
 ## Attributes
+
+__heartbeat.event__ *string*
+
+Default is `message`.
+
 __heartbeat.ms__ *int*
 
-Default is 0. If greater than 0 a heart beat will be created from `init()`.
+Default is `0`. If greater than 0 a heart beat will be created from `init()`.
 
 __heartbeat.msg__ *string*
 
-Message sent if `heartbeat.ms` is greater than 0.
+Default is `ping`. Message sent if `heartbeat.ms` is greater than 0.
 
 ## API
+
 __constructor__([heartbeat], [...msgs])
 
 Creates an `EventSource` instance with optional messages to be transmitted on successful connection.
@@ -27,6 +33,7 @@ __send__(msg[, event, id]);
 Sends a message over an existing `EventSource`.
 
 ## Example
+
 ```javascript
 const streams = new Map(),
     eventsource = require("tiny-eventsource"),

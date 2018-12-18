@@ -6,7 +6,7 @@ function heartbeat (arg) {
 	if (arg.heartbeat.ms > 0) {
 		setTimeout(() => {
 			if (arg.listenerCount("data") > 0) {
-				arg.send(arg.heartbeat.msg);
+				arg.send(arg.heartbeat.msg, arg.heartbeat.event);
 				heartbeat(arg);
 			}
 		}, arg.heartbeat.ms);
@@ -30,6 +30,7 @@ class EventSource extends EventEmitter {
 
 		super();
 		this.heartbeat = {
+			event: obj && typeof config.event === "string" ? config.event : "message",
 			ms: obj && typeof config.ms === "number" ? config.ms : 0,
 			msg: obj && typeof config.msg === "string" ? config.msg : "ping"
 		};
