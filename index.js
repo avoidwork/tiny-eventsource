@@ -52,7 +52,7 @@ class EventSource extends EventEmitter {
 		if (res !== void 0) {
 			res.statusCode = 200;
 			res.setHeader("content-type", "text/event-stream");
-			res.setHeader("cache-control", "no-cache");
+			res.setHeader("cache-control", "no-store, max-age=0");
 			res.setHeader("connection", "keep-alive");
 			this.on("data", fn);
 		}
