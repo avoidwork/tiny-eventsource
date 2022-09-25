@@ -22,6 +22,9 @@ const minOutBase = {banner: bannerShort, name: pkg.name, plugins: [terser()], so
 export default [
 	{
 		input: "./src/eventsource.js",
+		external: [
+			"node:events"
+		],
 		output: [
 			{
 				...cjOutBase,

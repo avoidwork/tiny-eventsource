@@ -1,9 +1,28 @@
-import {EventEmitter} from "node:events";
+/**
+ * tiny-eventsource
+ *
+ * @copyright 2022 Jason Mulligan <jason.mulligan@avoidwork.com>
+ * @license BSD-3-Clause
+ * @version 2.0.0
+ */
+import {EventEmitter}from'node:events';function heartbeat (arg) {
+	if (arg.heartbeat.ms > 0) {
+		setTimeout(() => {
+			if (arg.listenerCount("data") > 0) {
+				arg.send(arg.heartbeat.msg, arg.heartbeat.event);
+				heartbeat(arg);
+			}
+		}, arg.heartbeat.ms);
+	}
+}function transmit (res, arg, id) {
+	res.write(`id: ${arg.id || id}\n`);
 
-import {heartbeat} from "./heartbeat.js";
-import {transmit} from "./transmit.js";
+	if (arg.event !== void 0) {
+		res.write(`event: ${arg.event}\n`);
+	}
 
-class EventSource extends EventEmitter {
+	res.write(`data: ${typeof arg.data === "object" ? JSON.stringify(arg.data) : arg.data}\n\n`);
+}class EventSource extends EventEmitter {
 	constructor (config, ...args) {
 		const str = typeof config === "string",
 			obj = !str && config !== void 0 && config instanceof Object;
@@ -53,6 +72,6 @@ class EventSource extends EventEmitter {
 	}
 }
 
-export function eventsource (...args) {
+function eventsource (...args) {
 	return new EventSource(...args);
-}
+}export{eventsource};
