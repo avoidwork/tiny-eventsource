@@ -1,7 +1,5 @@
 # tiny-eventsource
 
-[![build status](https://secure.travis-ci.org/avoidwork/tiny-eventsource.svg)](https://travis-ci.org/avoidwork/tiny-eventsource)
-
 Tiny EventSource for API servers.
 
 ## Attributes
@@ -35,11 +33,12 @@ Sends a message over an existing `EventSource`.
 ## Example
 
 ```javascript
-const streams = new Map(),
-    eventsource = require("tiny-eventsource"),
-    {STATUS_CODES} = require("http");
+import {eventsource} from "tiny-eventsource";
+import {STATUS_CODES} from "node:http";
 
-module.exports = (req, res) => {
+const streams = new Map();
+
+export function stream (req, res) {
 	if (req.isAuthenticated()) {
 		const id = req.user.id;
 
@@ -55,3 +54,7 @@ module.exports = (req, res) => {
 	}
 };
 ```
+
+## License
+Copyright (c) 2022 Jason Mulligan
+Licensed under the BSD-3 license.

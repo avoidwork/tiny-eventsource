@@ -1,27 +1,7 @@
-"use strict";
+import {EventEmitter} from "node:events";
 
-const {EventEmitter} = require("events");
-
-function heartbeat (arg) {
-	if (arg.heartbeat.ms > 0) {
-		setTimeout(() => {
-			if (arg.listenerCount("data") > 0) {
-				arg.send(arg.heartbeat.msg, arg.heartbeat.event);
-				heartbeat(arg);
-			}
-		}, arg.heartbeat.ms);
-	}
-}
-
-function transmit (res, arg, id) {
-	res.write(`id: ${arg.id || id}\n`);
-
-	if (arg.event !== void 0) {
-		res.write(`event: ${arg.event}\n`);
-	}
-
-	res.write(`data: ${typeof arg.data === "object" ? JSON.stringify(arg.data) : arg.data}\n\n`);
-}
+import {heartbeat} from "./heartbeat.js";
+import {transmit} from "./transmit.js";
 
 class EventSource extends EventEmitter {
 	constructor (config, ...args) {
