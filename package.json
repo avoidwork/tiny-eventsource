@@ -2,12 +2,12 @@
   "name": "tiny-eventsource",
   "version": "2.0.0",
   "description": "Tiny EventSource for API servers",
-  "source": "src/eventstream.js",
-  "main": "dist/tiny-eventstream.cjs",
-  "module": "dist/tiny-eventstream.esm.js",
+  "source": "src/eventsource.js",
+  "main": "dist/tiny-eventsource.cjs",
+  "module": "dist/tiny-eventsource.esm.js",
   "type": "module",
   "sourceType": "module",
-  "types": "types/eventstream.d.ts",
+  "types": "types/eventsource.d.ts",
   "engines": {
     "node": ">=16"
   },
