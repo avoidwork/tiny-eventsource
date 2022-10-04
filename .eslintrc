@@ -11,7 +11,10 @@
   },
   "globals": {
     "describe": "readonly",
-    "it": "readonly"
+    "it": "readonly",
+    "after": "readonly",
+    "before": "readonly",
+    "expect": "readonly"
   },
   "rules": {
     "arrow-parens": [2, "as-needed"],
