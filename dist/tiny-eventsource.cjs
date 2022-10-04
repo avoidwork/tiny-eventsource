@@ -1,6 +1,15 @@
-"use strict";
+/**
+ * tiny-eventsource
+ *
+ * @copyright 2022 Jason Mulligan <jason.mulligan@avoidwork.com>
+ * @license BSD-3-Clause
+ * @version 2.0.0
+ */
+'use strict';
 
-const {EventEmitter} = require("events");
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var node_events = require('node:events');
 
 function heartbeat (arg) {
 	if (arg.heartbeat.ms > 0) {
@@ -23,7 +32,7 @@ function transmit (res, arg, id) {
 	res.write(`data: ${typeof arg.data === "object" ? JSON.stringify(arg.data) : arg.data}\n\n`);
 }
 
-class EventSource extends EventEmitter {
+class EventSource extends node_events.EventEmitter {
 	constructor (config, ...args) {
 		const str = typeof config === "string",
 			obj = !str && config !== void 0 && config instanceof Object;
@@ -73,4 +82,8 @@ class EventSource extends EventEmitter {
 	}
 }
 
-module.exports = (...args) => new EventSource(...args);
+function eventsource (...args) {
+	return new EventSource(...args);
+}
+
+exports.eventsource = eventsource;
