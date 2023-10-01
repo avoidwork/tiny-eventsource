@@ -1,7 +1,7 @@
 {
   "name": "tiny-eventsource",
   "version": "2.0.0",
-  "description": "Tiny EventSource for API servers",
+  "description": "Tiny EventSource simplifies server-sent events for API servers",
   "source": "src/eventsource.js",
   "main": "dist/tiny-eventsource.cjs",
   "module": "dist/tiny-eventsource.esm.js",

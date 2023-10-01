@@ -1,34 +1,6 @@
-# tiny-eventsource
+# Tiny EventSource
 
-Tiny EventSource for API servers.
-
-## Attributes
-
-__heartbeat.event__ *string*
-
-Default is `message`.
-
-__heartbeat.ms__ *int*
-
-Default is `0`. If greater than 0 a heart beat will be created from `init()`.
-
-__heartbeat.msg__ *string*
-
-Default is `ping`. Message sent if `heartbeat.ms` is greater than 0.
-
-## API
-
-__constructor__([heartbeat], [...msgs])
-
-Creates an `EventSource` instance with optional messages to be transmitted on successful connection.
-
-__init__(req, res)
-
-Initializes an `Event Source` stream.
-
-__send__(msg[, event, id]);
-
-Sends a message over an existing `EventSource`.
+Tiny EventSource simplifies `server-sent` events for API servers.
 
 ## Example
 
@@ -55,6 +27,34 @@ export function stream (req, res) {
 };
 ```
 
+## Options
+
+### event
+
+Default is `message`.
+
+### ms
+
+Default is `0`. If greater than 0 a heart beat will be created from `init()`.
+
+### msg
+
+Default is `ping`. Message sent if `ms` is greater than `0`.
+
+## API
+
+### constructor({options}, [...msgs])
+
+Creates an `EventSource` instance with optional messages to be transmitted on successful connection.
+
+### init(req, res)
+
+Initializes an `Event Source` stream.
+
+### send(msg[, event, id]);
+
+Sends a message over an existing `EventSource`.
+
 ## License
-Copyright (c) 2022 Jason Mulligan
+Copyright (c) 2023 Jason Mulligan
 Licensed under the BSD-3 license.
