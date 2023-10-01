@@ -1,25 +1,30 @@
 {
   "name": "tiny-eventsource",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Tiny EventSource simplifies server-sent events for API servers",
   "source": "src/eventsource.js",
   "main": "dist/tiny-eventsource.cjs",
   "module": "dist/tiny-eventsource.esm.js",
+  "exports": {
+    "types": "./types/eventsource.d.ts",
+    "import": "./dist/tiny-eventsource.js",
+    "require": "./dist/tiny-eventsource.cjs"
+  },
   "type": "module",
-  "sourceType": "module",
   "types": "types/eventsource.d.ts",
   "engines": {
     "node": ">=16"
   },
   "engineStrict": true,
   "scripts": {
-    "build": "npm run lint && rm -rf dist/* && npm run rollup",
+    "build": "npm run lint && rm -rf dist && npm run rollup && npm run mocha",
     "changelog": "auto-changelog -p",
+    "fix": "eslint --fix *.js src/*.js test/*.js",
     "lint": "eslint *.js src/*.js test/*.js",
-    "mocha": "mocha test/*.js",
+    "mocha": "nyc mocha test/*.js",
     "rollup": "rollup --config",
     "test": "npm run lint && npm run mocha",
-    "types": "npx -p typescript tsc src/*.js --declaration --allowJs --emitDeclarationOnly --outDir types",
+    "types": "npx -p typescript tsc src/eventsource.js --declaration --allowJs --emitDeclarationOnly --outDir types",
     "prepare": "husky install"
   },
   "repository": {
@@ -43,11 +48,11 @@
   "homepage": "https://github.com/avoidwork/tiny-eventsource#readme",
   "devDependencies": {
     "auto-changelog": "^2.4.0",
-    "eslint": "^8.23.1",
+    "eslint": "^8.50.0",
     "husky": "^8.0.3",
-    "mocha": "^10.0.0",
-    "rollup": "^2.79.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "typescript": "^4.8.3"
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "rollup": "^3.29.4",
+    "typescript": "^5.2.2"
   }
 }

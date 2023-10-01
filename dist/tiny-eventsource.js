@@ -5,11 +5,7 @@
  * @license BSD-3-Clause
  * @version 2.0.0
  */
-'use strict';
-
-var node_events = require('node:events');
-
-const DATA = "data";
+import {EventEmitter}from'node:events';const DATA = "data";
 const EMPTY = "";
 const ID_MSG = "id: %ID\n";
 const ID_TOKEN = "%ID";
@@ -30,9 +26,7 @@ const CACHE_CONTROL = "cache-control";
 const NO_STORE_MAX_AGE_0 = "no-store, max-age=0";
 const CONNECTION = "connection";
 const KEEP_ALIVE = "keep-alive";
-const CLOSE = "close";
-
-function heartbeat (arg = {heartbeat: {event: EMPTY, ms: 0}}) {
+const CLOSE = "close";function heartbeat (arg = {heartbeat: {event: EMPTY, ms: 0}}) {
 	if (arg?.heartbeat?.ms > 0) {
 		setTimeout(() => {
 			if (arg.listenerCount(DATA) > 0) {
@@ -41,9 +35,7 @@ function heartbeat (arg = {heartbeat: {event: EMPTY, ms: 0}}) {
 			}
 		}, arg.heartbeat.ms);
 	}
-}
-
-function transmit (res, arg = {data: ""}, id = 0) {
+}function transmit (res, arg = {data: ""}, id = 0) {
 	res.write(ID_MSG.replace(ID_TOKEN, id));
 
 	if (arg.event !== void 0) {
@@ -51,9 +43,7 @@ function transmit (res, arg = {data: ""}, id = 0) {
 	}
 
 	res.write(DATA_MSG.replace(DATA_TOKEN, typeof arg.data === "object" ? JSON.stringify(arg.data) : arg.data));
-}
-
-class EventSource extends node_events.EventEmitter {
+}class EventSource extends EventEmitter {
 	constructor (config, ...args) {
 		const str = typeof config === STRING,
 			obj = !str && config !== void 0 && config instanceof Object;
@@ -105,6 +95,4 @@ class EventSource extends node_events.EventEmitter {
 
 function eventsource (...args) {
 	return new EventSource(...args);
-}
-
-exports.eventsource = eventsource;
+}export{eventsource};

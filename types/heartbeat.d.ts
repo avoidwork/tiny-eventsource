@@ -1,1 +1,6 @@
-export function heartbeat(arg: any): void;
+export function heartbeat(arg?: {
+    heartbeat: {
+        event: string;
+        ms: number;
+    };
+}): void;

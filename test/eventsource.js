@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import {eventsource} from "../dist/tiny-eventsource.esm.js";
+import {eventsource} from "../dist/tiny-eventsource.cjs";
 
 describe("Testing functionality", function () {
 	it("It should do nothing with stock configuration", function () {

@@ -1,45 +1,61 @@
 import {EventEmitter} from "node:events";
-
 import {heartbeat} from "./heartbeat.js";
 import {transmit} from "./transmit.js";
+import {
+	CACHE_CONTROL,
+	CLOSE,
+	CONNECTION,
+	CONTENT_TYPE,
+	DATA,
+	INT_0,
+	INT_200,
+	INT_NEG_1,
+	KEEP_ALIVE,
+	MESSAGE,
+	NO_STORE_MAX_AGE_0,
+	NUMBER,
+	PING,
+	STRING,
+	TEXT_EVENT_STREAM
+} from "./constants.js";
 
 class EventSource extends EventEmitter {
 	constructor (config, ...args) {
-		const str = typeof config === "string",
+		const str = typeof config === STRING,
 			obj = !str && config !== void 0 && config instanceof Object;
 
 		super();
 		this.heartbeat = {
-			event: obj && typeof config.event === "string" ? config.event : "message",
-			ms: obj && typeof config.ms === "number" ? config.ms : 0,
-			msg: obj && typeof config.msg === "string" ? config.msg : "ping"
+			event: obj && typeof config.event === STRING ? config.event : MESSAGE,
+			ms: obj && typeof config.ms === NUMBER ? config.ms : INT_0,
+			msg: obj && typeof config.msg === STRING ? config.msg : PING
 		};
 		this.initial = str ? [config, ...args] : [...args];
-		this.setMaxListeners(0);
+		this.setMaxListeners(INT_0);
 	}
 
 	init (req, res) {
-		let id = -1;
+		let id = INT_NEG_1;
 		const fn = arg => transmit(res, arg, ++id);
 
 		if (req !== void 0) {
-			req.socket.setTimeout(0);
+			req.socket.setTimeout(INT_0);
 			req.socket.setNoDelay(true);
 			req.socket.setKeepAlive(true);
-			req.on("close", () => this.off("data", fn));
+			req.on(CLOSE, () => this.off(DATA, fn));
 		}
 
 		if (res !== void 0) {
-			res.statusCode = 200;
-			res.setHeader("content-type", "text/event-stream");
-			res.setHeader("cache-control", "no-store, max-age=0");
-			res.setHeader("connection", "keep-alive");
-			this.on("data", fn);
+			res.statusCode = INT_200;
+			res.setHeader(CONTENT_TYPE, TEXT_EVENT_STREAM);
+			res.setHeader(CACHE_CONTROL, NO_STORE_MAX_AGE_0);
+			res.setHeader(CONNECTION, KEEP_ALIVE);
+			this.on(DATA, fn);
 		}
 
 		this.initial.forEach(i => this.send(i));
 
-		if (this.heartbeat.ms > 0) {
+		if (this.heartbeat.ms > INT_0) {
 			heartbeat(this);
 		}
 
@@ -47,7 +63,7 @@ class EventSource extends EventEmitter {
 	}
 
 	send (data, event, id) {
-		this.emit("data", {data, event, id});
+		this.emit(DATA, {data, event, id});
 
 		return this;
 	}
