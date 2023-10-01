@@ -19,7 +19,8 @@
     "mocha": "mocha test/*.js",
     "rollup": "rollup --config",
     "test": "npm run lint && npm run mocha",
-    "types": "npx -p typescript tsc src/*.js --declaration --allowJs --emitDeclarationOnly --outDir types"
+    "types": "npx -p typescript tsc src/*.js --declaration --allowJs --emitDeclarationOnly --outDir types",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -40,10 +41,10 @@
     "url": "https://github.com/avoidwork/tiny-eventsource/issues"
   },
   "homepage": "https://github.com/avoidwork/tiny-eventsource#readme",
-  "dependencies": {},
   "devDependencies": {
     "auto-changelog": "^2.4.0",
     "eslint": "^8.23.1",
+    "husky": "^8.0.3",
     "mocha": "^10.0.0",
     "rollup": "^2.79.0",
     "rollup-plugin-terser": "^7.0.2",
