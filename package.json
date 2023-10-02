@@ -16,13 +16,13 @@
   },
   "engineStrict": true,
   "scripts": {
-    "build": "npm run lint && rm -rf dist && npm run rollup && npm run mocha",
+    "build": "npm run lint && rm -rf dist && npm run rollup",
     "changelog": "auto-changelog -p",
     "fix": "eslint --fix *.js src/*.js test/*.js",
     "lint": "eslint *.js src/*.js test/*.js",
     "mocha": "nyc mocha test/*.js",
     "rollup": "rollup --config",
-    "test": "npm run lint && npm run mocha",
+    "test": "npm run build && npm run mocha",
     "types": "npx -p typescript tsc src/eventsource.js --declaration --allowJs --emitDeclarationOnly --outDir types",
     "prepare": "husky install"
   },
