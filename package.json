@@ -3,8 +3,7 @@
   "version": "3.0.0",
   "description": "Tiny EventSource simplifies server-sent events for API servers",
   "source": "src/eventsource.js",
-  "main": "dist/tiny-eventsource.cjs",
-  "module": "dist/tiny-eventsource.esm.js",
+  "main": "dist/tiny-eventsource",
   "exports": {
     "types": "./types/eventsource.d.ts",
     "import": "./dist/tiny-eventsource.js",
