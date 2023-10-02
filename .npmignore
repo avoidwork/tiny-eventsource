@@ -1,7 +1,10 @@
 /.idea/
+/.github/
+/.husky/
+/.nyc_output/
 /node_modules/
+/src/
 /test/
 .eslintrc
 .gitignore
-.travis.yml
-Gruntfile.js
+rollup.config.js

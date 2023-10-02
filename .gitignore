@@ -28,3 +28,5 @@ node_modules
 
 .idea
 yarn.lock
+.nyc_output
+.husky
