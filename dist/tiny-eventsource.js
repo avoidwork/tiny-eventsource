@@ -3,7 +3,7 @@
  *
  * @copyright 2023 Jason Mulligan <jason.mulligan@avoidwork.com>
  * @license BSD-3-Clause
- * @version 3.0.2
+ * @version 3.0.3
  */
 import {EventEmitter}from'node:events';const DATA = "data";
 const EMPTY = "";

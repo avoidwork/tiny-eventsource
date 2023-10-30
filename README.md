@@ -4,6 +4,8 @@ Tiny EventSource simplifies `server-sent` events for API servers.
 
 ## Example
 
+### Using the factory
+
 ```javascript
 import {eventsource} from "tiny-eventsource";
 import {STATUS_CODES} from "node:http";
@@ -25,6 +27,12 @@ export function stream (req, res) {
 		res.end(STATUS_CODES[res.statusCode]);
 	}
 };
+```
+
+### Using the Class
+
+```javascript
+import {EventSource} from "tiny-eventsource";
 ```
 
 ## Testing
@@ -64,9 +72,17 @@ Creates an `EventSource` instance with optional messages to be transmitted on su
 
 Initializes an `Event Source` stream.
 
+### listenerCount()
+
+Returns the number of listeners on the `EventSource` instance.
+
 ### send(msg[, event, id]);
 
-Sends a message over an existing `EventSource`.
+Sends a message over an `EventSource` instance.
+
+### setMaxListeners(n)
+
+Sets the maximum listeners on the `EventSource` instance; default is `0`.
 
 ## License
 Copyright (c) 2023 Jason Mulligan
