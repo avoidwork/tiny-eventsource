@@ -8,7 +8,7 @@ export class EventSource {
     };
     initial: any[];
     init(req: any, res: any): this;
-    listenerCount(): number;
+    listenerCount(eventName: string): number;
     send(data: any, event: any, id: any): this;
     setMaxListeners(arg: number): this;
 }
