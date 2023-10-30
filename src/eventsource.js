@@ -19,7 +19,7 @@ import {
 	TEXT_EVENT_STREAM
 } from "./constants.js";
 
-class EventSource extends EventEmitter {
+export class EventSource extends EventEmitter {
 	constructor (config, ...args) {
 		const str = typeof config === STRING,
 			obj = !str && config !== void 0 && config instanceof Object;

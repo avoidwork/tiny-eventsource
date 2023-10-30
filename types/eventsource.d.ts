@@ -1,5 +1,5 @@
 export function eventsource(...args: any[]): EventSource;
-declare class EventSource {
+export class EventSource {
     constructor(config: any, ...args: any[]);
     heartbeat: {
         event: any;
@@ -10,4 +10,3 @@ declare class EventSource {
     init(req: any, res: any): this;
     send(data: any, event: any, id: any): this;
 }
-export {};
