@@ -9,6 +9,8 @@ export class EventSource {
     initial: string[];
     init(req: any, res: any): this;
     listenerCount(eventName: string): number;
+    on(ev: string, fn: Function): this;
+    off(ev: string, fn: Function): this;
     send(data: any, event?: any, id?: any): this;
     setMaxListeners(arg: number): this;
 }
