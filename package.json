@@ -1,6 +1,6 @@
 {
   "name": "tiny-eventsource",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "Tiny EventSource simplifies server-sent events for API servers",
   "source": "src/eventsource.js",
   "main": "dist/tiny-eventsource.cjs",
@@ -12,7 +12,7 @@
   "type": "module",
   "types": "types/eventsource.d.ts",
   "engines": {
-    "node": ">=16"
+    "node": ">=6"
   },
   "engineStrict": true,
   "scripts": {
@@ -23,7 +23,7 @@
     "mocha": "nyc mocha test/*.js",
     "rollup": "rollup --config",
     "test": "npm run build && npm run mocha",
-    "types": "npx -p typescript tsc src/eventsource.js --declaration --allowJs --emitDeclarationOnly --outDir types",
+    "types": "npx -p typescript tsc src/eventsource.js --declaration --allowJs --emitDeclarationOnly --outDir types && rm types/constants.d.ts",
     "prepare": "husky install"
   },
   "repository": {
