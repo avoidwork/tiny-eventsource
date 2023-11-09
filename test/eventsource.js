@@ -56,8 +56,10 @@ describe("Testing functionality", function () {
 				finish = true;
 				assert.equal(arg.data, "ping", "Should be 'ping'");
 				this.eventsource.off("data", fn);
-				this.eventsource.ms = 0;
-				done();
+				setTimeout(() => {
+					this.eventsource.heartbeat.ms = 0;
+					done();
+				}, this.ms);
 			}
 		};
 

@@ -40,11 +40,20 @@ import {EventSource} from "tiny-eventsource";
 Tiny EventSource has 100% code coverage with its tests.
 
 ```console
+  Testing functionality
+    ✔ It should do nothing with stock configuration
+    ✔ It should have an accurate listener count
+    ✔ It should have a heartbeat (502ms)
+    ✔ It should send custom events
+
+
+  4 passing (508ms)
+
 ----------------------|---------|----------|---------|---------|----------------------
-File                  | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+File                  | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s    
 ----------------------|---------|----------|---------|---------|----------------------
-All files             |     100 |    70.58 |     100 |     100 |                     
- tiny-eventsource.cjs |     100 |    70.58 |     100 |     100 | 35-36,46,53,63,65-82
+All files             |     100 |    72.22 |     100 |     100 |                      
+ tiny-eventsource.cjs |     100 |    72.22 |     100 |     100 | 35-36,49,56,66,68-88 
 ----------------------|---------|----------|---------|---------|----------------------
 ```
 
