@@ -5,6 +5,9 @@ export function heartbeat (arg = {heartbeat: {event: EMPTY, ms: 0}}) {
 		setTimeout(() => {
 			if (arg.listenerCount(DATA) > 0) {
 				arg.send(arg.heartbeat.msg, arg.heartbeat.event);
+			}
+
+			if (arg.heartbeat.ms > 0) {
 				heartbeat(arg);
 			}
 		}, arg.heartbeat.ms);
