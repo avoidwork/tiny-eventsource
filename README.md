@@ -62,6 +62,12 @@ Default is `0`. If greater than 0 a heart beat will be created from `init()`.
 
 Default is `ping`. Message sent if `ms` is greater than `0`.
 
+## Events
+
+### close
+
+Emitted when an `EventSource` request is closed.
+
 ## API
 
 ### constructor({options}, [...msgs])
