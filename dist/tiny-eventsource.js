@@ -3,7 +3,7 @@
  *
  * @copyright 2023 Jason Mulligan <jason.mulligan@avoidwork.com>
  * @license BSD-3-Clause
- * @version 3.0.7
+ * @version 3.0.8
  */
 import {EventEmitter}from'node:events';const DATA = "data";
 const EMPTY = "";
@@ -66,7 +66,10 @@ const CLOSE = "close";function heartbeat (arg = {heartbeat: {event: EMPTY, ms: 0
 			req.socket.setTimeout(INT_0);
 			req.socket.setNoDelay(true);
 			req.socket.setKeepAlive(true);
-			req.on(CLOSE, () => this.off(DATA, fn));
+			req.on(CLOSE, () => {
+				this.off(DATA, fn);
+				this.emit(CLOSE);
+			});
 		}
 
 		if (res !== void 0) {

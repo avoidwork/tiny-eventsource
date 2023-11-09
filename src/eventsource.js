@@ -42,7 +42,10 @@ export class EventSource extends EventEmitter {
 			req.socket.setTimeout(INT_0);
 			req.socket.setNoDelay(true);
 			req.socket.setKeepAlive(true);
-			req.on(CLOSE, () => this.off(DATA, fn));
+			req.on(CLOSE, () => {
+				this.off(DATA, fn);
+				this.emit(CLOSE);
+			});
 		}
 
 		if (res !== void 0) {

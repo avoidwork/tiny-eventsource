@@ -3,7 +3,7 @@
  *
  * @copyright 2023 Jason Mulligan <jason.mulligan@avoidwork.com>
  * @license BSD-3-Clause
- * @version 3.0.7
+ * @version 3.0.8
  */
 'use strict';
 
@@ -76,7 +76,10 @@ class EventSource extends node_events.EventEmitter {
 			req.socket.setTimeout(INT_0);
 			req.socket.setNoDelay(true);
 			req.socket.setKeepAlive(true);
-			req.on(CLOSE, () => this.off(DATA, fn));
+			req.on(CLOSE, () => {
+				this.off(DATA, fn);
+				this.emit(CLOSE);
+			});
 		}
 
 		if (res !== void 0) {
