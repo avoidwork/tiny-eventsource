@@ -47,7 +47,7 @@
   "homepage": "https://github.com/avoidwork/tiny-eventsource#readme",
   "devDependencies": {
     "auto-changelog": "^2.4.0",
-    "eslint": "^8.50.0",
+    "eslint": "^9.27.0",
     "husky": "^9.0.5",
     "mocha": "^11.0.1",
     "nyc": "^17.0.0",
