@@ -60,6 +60,7 @@ class EventSource extends node_events.EventEmitter {
 			req.socket.setKeepAlive(true);
 			req.on(CLOSE, () => {
 				this.off(DATA, fn);
+				this.stop();
 				this.emit(CLOSE);
 			});
 		}

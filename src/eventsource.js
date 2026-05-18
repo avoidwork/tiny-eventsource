@@ -52,6 +52,7 @@ export class EventSource extends EventEmitter {
 			req.socket.setKeepAlive(true);
 			req.on(CLOSE, () => {
 				this.off(DATA, fn);
+				this.stop();
 				this.emit(CLOSE);
 			});
 		}
