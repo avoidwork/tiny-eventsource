@@ -12,7 +12,7 @@
   "type": "module",
   "types": "types/eventsource.d.ts",
   "engines": {
-    "node": ">=6"
+    "node": ">=12"
   },
   "engineStrict": true,
   "scripts": {
