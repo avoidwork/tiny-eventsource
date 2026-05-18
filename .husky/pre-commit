@@ -1,1 +1,1 @@
-npm run fix && npm run mocha && git add -A
+npm run fix && npm run test && git add -A
