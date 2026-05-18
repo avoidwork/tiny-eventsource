@@ -1,7 +1,7 @@
 /**
  * tiny-eventsource
  *
- * @copyright 2023 Jason Mulligan <jason.mulligan@avoidwork.com>
+ * @copyright 2026 Jason Mulligan <jason.mulligan@avoidwork.com>
  * @license BSD-3-Clause
  * @version 3.0.8
  */
@@ -32,7 +32,7 @@ const CONNECTION = "connection";
 const KEEP_ALIVE = "keep-alive";
 const CLOSE = "close";
 
-function heartbeat (arg = {heartbeat: {event: EMPTY, ms: 0}}) {
+function heartbeat(arg = { heartbeat: { event: EMPTY, ms: 0 } }) {
 	if (arg?.heartbeat?.ms > 0) {
 		setTimeout(() => {
 			if (arg.listenerCount(DATA) > 0) {
@@ -46,18 +46,23 @@ function heartbeat (arg = {heartbeat: {event: EMPTY, ms: 0}}) {
 	}
 }
 
-function transmit (res, arg = {data: ""}, id = 0) {
+function transmit(res, arg = { data: "" }, id = 0) {
 	res.write(ID_MSG.replace(ID_TOKEN, id));
 
 	if (arg.event !== void 0) {
 		res.write(EVENT_MSG.replace(EVENT_TOKEN, arg.event));
 	}
 
-	res.write(DATA_MSG.replace(DATA_TOKEN, typeof arg.data === "object" ? JSON.stringify(arg.data) : arg.data));
+	res.write(
+		DATA_MSG.replace(
+			DATA_TOKEN,
+			typeof arg.data === "object" ? JSON.stringify(arg.data) : arg.data,
+		),
+	);
 }
 
 class EventSource extends node_events.EventEmitter {
-	constructor (config, ...args) {
+	constructor(config, ...args) {
 		const str = typeof config === STRING,
 			obj = !str && config !== void 0 && config instanceof Object;
 
@@ -65,15 +70,15 @@ class EventSource extends node_events.EventEmitter {
 		this.heartbeat = {
 			event: obj && typeof config.event === STRING ? config.event : MESSAGE,
 			ms: obj && typeof config.ms === NUMBER ? config.ms : INT_0,
-			msg: obj && typeof config.msg === STRING ? config.msg : PING
+			msg: obj && typeof config.msg === STRING ? config.msg : PING,
 		};
 		this.initial = str ? [config, ...args] : [...args];
 		this.setMaxListeners(INT_0);
 	}
 
-	init (req, res) {
+	init(req, res) {
 		let id = INT_NEG_1;
-		const fn = arg => transmit(res, arg, ++id);
+		const fn = (arg) => transmit(res, arg, ++id);
 
 		if (req !== void 0) {
 			req.socket.setTimeout(INT_0);
@@ -93,7 +98,7 @@ class EventSource extends node_events.EventEmitter {
 			this.on(DATA, fn);
 		}
 
-		this.initial.forEach(i => this.send(i));
+		this.initial.forEach((i) => this.send(i));
 
 		if (this.heartbeat.ms > INT_0) {
 			heartbeat(this);
@@ -102,14 +107,14 @@ class EventSource extends node_events.EventEmitter {
 		return this;
 	}
 
-	send (data, event, id) {
-		this.emit(DATA, {data, event, id});
+	send(data, event, id) {
+		this.emit(DATA, { data, event, id });
 
 		return this;
 	}
 }
 
-function eventsource (...args) {
+function eventsource(...args) {
 	return new EventSource(...args);
 }
 

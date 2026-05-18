@@ -1,16 +1,26 @@
-export function eventsource(...args: any[]): EventSource;
-export class EventSource {
-    constructor(config: any, ...args: any[]);
+export interface EventSourceConfig {
+    event?: string;
+    ms?: number;
+    msg?: string;
+}
+
+type NodeHttp = import('node:http');
+type IncomingMessage = NodeHttp.IncomingMessage;
+type ServerResponse = NodeHttp.ServerResponse<IncomingMessage>;
+type EventSourceArg = string | EventSourceConfig;
+
+export function eventsource(...args: EventSourceArg[]): EventSource;
+export declare class EventSource {
+    constructor(config?: EventSourceConfig | string, ...args: EventSourceArg[]);
     heartbeat: {
         event: string;
         ms: number;
         msg: string;
     };
-    initial: string[];
-    init(req: any, res: any): this;
-    listenerCount(eventName: string): number;
-    on(ev: string, fn: Function): this;
-    off(ev: string, fn: Function): this;
-    send(data: any, event?: any, id?: any): this;
-    setMaxListeners(arg: number): this;
+    initial: EventSourceArg[];
+    init(req: IncomingMessage | undefined, res: ServerResponse | undefined): this;
+    listenerCount(event: string): number;
+    emit(event: string, arg?: unknown): boolean;
+    send(data: unknown, event?: string, id?: number): this;
+    setMaxListeners(n: number): this;
 }
