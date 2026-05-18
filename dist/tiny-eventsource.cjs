@@ -10,7 +10,6 @@
 var node_events = require('node:events');
 
 const DATA = "data";
-const EMPTY = "";
 const ID_MSG = "id: %ID\n";
 const ID_TOKEN = "%ID";
 const EVENT_MSG = "event: %EVENT\n";
@@ -18,6 +17,7 @@ const EVENT_TOKEN = "%EVENT";
 const DATA_MSG = "data: %DATA\n\n";
 const DATA_TOKEN = "%DATA";
 const STRING = "string";
+const OBJECT = "object";
 const MESSAGE = "message";
 const NUMBER = "number";
 const PING = "ping";
@@ -32,36 +32,9 @@ const CONNECTION = "connection";
 const KEEP_ALIVE = "keep-alive";
 const CLOSE = "close";
 
-function heartbeat(arg = { heartbeat: { event: EMPTY, ms: 0 } }) {
-	if (arg?.heartbeat?.ms > 0) {
-		setTimeout(() => {
-			if (arg.listenerCount(DATA) > 0) {
-				arg.send(arg.heartbeat.msg, arg.heartbeat.event);
-			}
-
-			if (arg.heartbeat.ms > 0) {
-				heartbeat(arg);
-			}
-		}, arg.heartbeat.ms);
-	}
-}
-
-function transmit(res, arg = { data: "" }, id = 0) {
-	res.write(ID_MSG.replace(ID_TOKEN, id));
-
-	if (arg.event !== void 0) {
-		res.write(EVENT_MSG.replace(EVENT_TOKEN, arg.event));
-	}
-
-	res.write(
-		DATA_MSG.replace(
-			DATA_TOKEN,
-			typeof arg.data === "object" ? JSON.stringify(arg.data) : arg.data,
-		),
-	);
-}
-
 class EventSource extends node_events.EventEmitter {
+	#heartbeatTimeout = null;
+
 	constructor(config, ...args) {
 		const str = typeof config === STRING,
 			obj = !str && config !== void 0 && config instanceof Object;
@@ -73,12 +46,13 @@ class EventSource extends node_events.EventEmitter {
 			msg: obj && typeof config.msg === STRING ? config.msg : PING,
 		};
 		this.initial = str ? [config, ...args] : [...args];
+		this.#heartbeatTimeout = null;
 		this.setMaxListeners(INT_0);
 	}
 
 	init(req, res) {
 		let id = INT_NEG_1;
-		const fn = (arg) => transmit(res, arg, ++id);
+		const fn = (arg) => this.#transmit(res, arg, ++id);
 
 		if (req !== void 0) {
 			req.socket.setTimeout(INT_0);
@@ -101,14 +75,50 @@ class EventSource extends node_events.EventEmitter {
 		this.initial.forEach((i) => this.send(i));
 
 		if (this.heartbeat.ms > INT_0) {
-			heartbeat(this);
+			this.#startHeartbeat();
 		}
 
 		return this;
 	}
 
+	#startHeartbeat() {
+		this.#heartbeatTimeout = setTimeout(() => {
+			if (this.listenerCount(DATA) > 0) {
+				this.send(this.heartbeat.msg, this.heartbeat.event);
+			}
+			if (this.heartbeat.ms > INT_0) {
+				this.#heartbeatTimeout = null;
+				this.#startHeartbeat();
+			}
+		}, this.heartbeat.ms);
+	}
+
+	#transmit(res, arg, id) {
+		res.write(ID_MSG.replace(ID_TOKEN, id));
+
+		if (arg.event !== void 0) {
+			res.write(EVENT_MSG.replace(EVENT_TOKEN, arg.event));
+		}
+
+		res.write(
+			DATA_MSG.replace(
+				DATA_TOKEN,
+				typeof arg.data === OBJECT ? JSON.stringify(arg.data) : arg.data,
+			),
+		);
+	}
+
 	send(data, event, id) {
 		this.emit(DATA, { data, event, id });
+
+		return this;
+	}
+
+	stop() {
+		if (this.#heartbeatTimeout !== null) {
+			clearTimeout(this.#heartbeatTimeout);
+			this.#heartbeatTimeout = null;
+		}
 
 		return this;
 	}

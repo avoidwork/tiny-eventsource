@@ -7,6 +7,7 @@ export const EVENT_TOKEN = "%EVENT";
 export const DATA_MSG = "data: %DATA\n\n";
 export const DATA_TOKEN = "%DATA";
 export const STRING = "string";
+export const OBJECT = "object";
 export const MESSAGE = "message";
 export const NUMBER = "number";
 export const PING = "ping";

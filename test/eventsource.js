@@ -88,4 +88,47 @@ describe("Testing functionality", function () {
 		this.eventsource.on("data", fn);
 		this.eventsource.send("Hello World!", "customEvent");
 	});
+
+	it("stop() cancels active heartbeat — no ping after stop()", function (done) {
+		this.ms = 300;
+		this.eventsource = eventsource({ms: this.ms}, "Hello World!");
+		this.eventsource.init(mockRequest, mockResponse);
+		let pingCount = 0;
+
+		this.eventsource.on("data", () => {
+			pingCount++;
+		});
+
+		setTimeout(() => {
+			assert.equal(pingCount, 1, "Should have received one ping before stop()");
+			this.eventsource.stop();
+			setTimeout(() => {
+				assert.equal(pingCount, 1, "Should still have only one ping after stop()");
+				this.eventsource.removeAllListeners("data");
+				done();
+			}, this.ms * 2 + 100);
+		}, this.ms + 10);
+	});
+
+	it("stop() on non-heartbeat instance is a no-op", function () {
+		this.eventsource = eventsource({ms: 0});
+		assert.doesNotThrow(() => {
+			this.eventsource.stop();
+		});
+	});
+
+	it("stop() returns the EventSource instance for chaining", function () {
+		this.eventsource = eventsource({ms: 200});
+		const ret = this.eventsource.stop();
+		assert.equal(ret, this.eventsource, "stop() should return this");
+	});
+
+	it("repeated stop() calls are safe", function () {
+		this.eventsource = eventsource({ms: 0});
+		assert.doesNotThrow(() => {
+			this.eventsource.stop();
+			this.eventsource.stop();
+			this.eventsource.stop();
+		});
+	});
 });
