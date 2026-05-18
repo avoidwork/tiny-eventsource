@@ -20,6 +20,7 @@ Tiny EventSource simplifies server-sent events (SSE) for API servers. An EventEm
   - [send()](#sendmsg-event-id)
   - [listenerCount()](#listenercountevent)
   - [setMaxListeners()](#setmaxlistenersn)
+  - [stop()](#stop)
 - [Options](#options)
 - [Events](#events)
   - [close](#close)
@@ -157,6 +158,16 @@ stream.setMaxListeners(0);
 | Parameter | Type     | Required | Description                                      |
 | --------- | -------- | -------- | ------------------------------------------------ |
 | n         | `number` | yes      | Maximum number of listeners; `0` means unlimited |
+
+**Returns:** `this` (`EventSource`)
+
+### stop()
+
+Stops the heartbeat interval if one is active.
+
+```javascript
+stream.stop();
+```
 
 **Returns:** `this` (`EventSource`)
 
