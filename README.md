@@ -100,5 +100,5 @@ Sends a message over an `EventSource` instance.
 Sets the maximum listeners on the `EventSource` instance; default is `0`.
 
 ## License
-Copyright (c) 2023 Jason Mulligan
+Copyright (c) 2023-2026 Jason Mulligan
 Licensed under the BSD-3 license.
