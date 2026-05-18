@@ -1,0 +1,238 @@
+# AGENTS.md
+
+Rules and principles for agents working on **this** project.
+
+---
+
+## 1. Core Rules
+
+### 1.0 Document Conventions
+
+When updating this document, append new information or sections. Do NOT delete or overwrite existing content unless explicitly directed. Always ask before making structural changes. When in doubt, keep it.
+
+### 1.1 Forbidden Patterns
+
+The following are **strictly prohibited**:
+
+- Hardcoded secrets, API keys, or credentials.
+- `console.log()` in production code.
+- Mutating a list while iterating over it.
+- Blocking I/O inside async functions.
+
+### 1.2 Security Rules
+
+Follow the [OWASP Top 10](https://owasp.org/www-project-top-10/) for every piece of code written:
+
+- Never store plaintext secrets. Use `process.env`.
+- Validate and sanitize all user input.
+- Log at structured level. Strip PII before logging.
+
+### 1.3 Git Operations
+
+- **Never rebase under any circumstance without explicit agreement from the user.** Never assume your decision is correct.
+- **Never push to any branch without explicit user approval.** Git changes (checkout, reset, revert, amend) are local operations — do not auto-push. Always ask "Push to remote?" before running `git push`.
+- Never force push.
+
+### 1.4 Core Principles
+
+- **DRY**: Extract repeated logic into functions or utilities.
+- **KISS**: Prefer simple, readable code over clever solutions.
+- **YAGNI**: Do NOT build features not required by the current spec.
+- **Single Responsibility**: Each module must have one reason to change.
+
+---
+
+## 2. Project Context
+
+Tiny EventSource simplifies server-sent events (SSE) for API servers. It provides an EventEmitter-based abstraction over the EventSource API for streaming events to HTTP clients.
+
+### 2.0 Expected Project Layout
+
+```
+tiny-eventsource/
+├── src/
+│   ├── constants.js      # SSE constants and defaults
+│   ├── eventsource.js    # Main EventSource class/factory
+│   ├── heartbeat.js      # Heartbeat interval logic
+│   └── transmit.js       # SSE message formatting/sending
+├── test/
+│   └── eventsource.js    # Unit tests
+├── dist/
+│   ├── tiny-eventsource.cjs  # CommonJS build
+│   └── tiny-eventsource.js   # ESM build
+├── types/
+│   └── eventsource.d.ts  # TypeScript declarations
+├── package.json
+├── rollup.config.js
+└── README.md
+```
+
+### 2.1 Quick Commands
+
+| Command             | Purpose                         |
+|---------------------|---------------------------------|
+| `npm run build`     | Lint and build (rollup)         |
+| `npm run mocha`     | Run tests with coverage         |
+| `npm run lint`      | ESLint check                    |
+| `npm run fix`       | ESLint auto-fix                 |
+| `npm run types`     | Generate TypeScript declarations |
+| `npm test`          | Full pipeline (build + test)    |
+
+---
+
+## 3. JavaScript/Node.js Conventions
+
+### 3.1 Language & Tooling
+
+- **JavaScript**: ES Module (ECMAScript Modules, `"type": "module"` in package.json)
+- **Package manager**: `npm` — the **only** supported package manager. Never use `yarn` or `pnpm`.
+- **Bundling**: `rollup` for dual CJS/ESM output.
+- **Linting**: `eslint` (`.eslintrc` config).
+- **Testing**: `mocha` + `nyc` (istanbul coverage).
+- **Git hooks**: `husky`.
+- **Type declarations**: Generated via `tsc` from JSDoc-annotated JS.
+
+### 3.2 Style
+
+- Use 2 spaces for indentation. No tabs. No hard line length limit enforced by ESLint.
+- Use `import`/`export` (ES module syntax). CommonJS only from rollup.
+- Public functions and the EventSource class must be well-documented via JSDoc.
+- Private functions prefixed with `_`.
+- Functions: `camelCase`. Constants: `UPPER_SNAKE_CASE`.
+
+### 3.3 Error Handling
+
+- Use `try`/`catch` for async operations.
+- Emit `error` events on the EventEmitter for exceptional conditions.
+- Never swallow errors silently.
+
+### 3.4 Async
+
+- Prefer `async`/`await` for async operations.
+- The `init()` method may start a heartbeat interval — ensure cleanup on close.
+
+### 3.5 Testing
+
+- Tests live in `test/` directory with the same name as the source module.
+- Each public function or class must have at least one test.
+- Goal is 100% code coverage.
+
+```bash
+npm run mocha          # Run tests
+npm run lint           # Lint + build first for full check
+```
+
+---
+
+## 4. EventSource Conventions
+
+### 4.1 SSE Protocol
+
+- Messages must conform to the Server-Sent Events (SSE) specification.
+- Content-Type must be `text/event-stream`.
+- Headers must include `cache-control: no-cache, must re-validate` and `Connection: keep-alive`.
+
+### 4.2 Factory Pattern
+
+The `eventsource(options, ...msgs)` factory returns an EventSource instance:
+
+```javascript
+const stream = eventsource({ms: 2e4}, "connected");
+stream.init(req, res);
+stream.send("payload", "custom_event");
+```
+
+### 4.3 Options
+
+- `event` (default: `"message"`): Event name for heartbeat/ping.
+- `ms` (default: `0`): Heartbeat interval in ms. If > 0, a ping interval is started.
+- `msg` (default: `"ping"`): Message sent for heartbeat.
+
+### 4.4 Cleanup
+
+When a client disconnects or the request is closed, the heartbeat interval must be cleared and the `close` event emitted.
+
+---
+
+## 5. Git Conventions
+
+### 5.1 Commit Messages
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat: add heartbeat interval support
+fix: clear heartbeat on client disconnect
+docs: update AGENTS.md with new conventions
+test: add coverage for transmit formatting
+chore: bump rollup version
+```
+
+### 5.2 Branching
+
+- Main branch is `main`.
+- Feature branches: `feat/<short-desc>` or `fix/<short-desc>`.
+- Never commit directly to `main`. Always create a feature branch first, then open a PR targeting `main`.
+
+### 5.2.1 Agent Workflow
+
+When auditing or modifying AGENTS.md (or any file):
+1. Create a feature branch: `git checkout -b docs/<short-desc>` (or `feat/`, `fix/`).
+2. Make changes and commit on the feature branch.
+3. Push the feature branch and open a PR with `gh pr create --base main`.
+4. Never commit or push directly to `main` or `master`.
+
+### 5.3 Code Review
+
+- All changes require at least one other reviewer.
+- No merging without passing CI (lint → build → test).
+
+### 5.4 Pull Request Templates
+
+If a `.github/PULL_REQUEST_TEMPLATE.md` file exists, it MUST be used when creating PRs. Fill out every section — do not leave any section blank. If a section does not apply, write `N/A` rather than skipping it.
+
+---
+
+## 6. Operational Rules
+
+### 6.1 Coverage
+
+The goal is **100% code coverage** via `nyc`. Every new function or class needs test coverage.
+
+```bash
+npm run mocha            # Run tests with nyc
+nyc report --reporter=text --check-coverage  # Verify coverage
+```
+
+### 6.2 Build Pipeline
+
+The build pipeline is: lint → rollup build (CJS + ESM) → generate type declarations.
+
+```bash
+npm run build   # npm run lint && rm -rf dist && npm run rollup
+```
+
+### 6.3 Dual Package
+
+The package exports both ESM (`./dist/tiny-eventsource.js`) and CJS (`./dist/tiny-eventsource.cjs`) entry points. All runtime code lives in `src/` — rollup handles bundling and output format.
+
+---
+
+## 7. Session Learnings
+
+Discovery notes about the codebase.
+
+### 7.1 README is the source of truth for project layout
+
+The `README.md` may show a more up-to-date project structure (e.g., additional modules). When in doubt, use it to verify the layout in section 2.0.
+
+---
+
+## 8. Checklist Before Marking a TODO Complete
+
+- [ ] No hardcoded secrets or credentials introduced.
+- [ ] Tests written and passing with 100% coverage maintained.
+- [ ] `eslint` passes via `npm run lint`.
+- [ ] Build (`npm run build`) succeeds.
+- [ ] No breaking changes to the public API (factory function, EventSource methods, options).
+- [ ] TypeScript declarations regenerated (`npm run types`) if API changed.
