@@ -1,6 +1,6 @@
-import {EventEmitter} from "node:events";
-import {heartbeat} from "./heartbeat.js";
-import {transmit} from "./transmit.js";
+import { EventEmitter } from "node:events";
+import { heartbeat } from "./heartbeat.js";
+import { transmit } from "./transmit.js";
 import {
 	CACHE_CONTROL,
 	CLOSE,
@@ -16,11 +16,11 @@ import {
 	NUMBER,
 	PING,
 	STRING,
-	TEXT_EVENT_STREAM
+	TEXT_EVENT_STREAM,
 } from "./constants.js";
 
 export class EventSource extends EventEmitter {
-	constructor (config, ...args) {
+	constructor(config, ...args) {
 		const str = typeof config === STRING,
 			obj = !str && config !== void 0 && config instanceof Object;
 
@@ -28,15 +28,15 @@ export class EventSource extends EventEmitter {
 		this.heartbeat = {
 			event: obj && typeof config.event === STRING ? config.event : MESSAGE,
 			ms: obj && typeof config.ms === NUMBER ? config.ms : INT_0,
-			msg: obj && typeof config.msg === STRING ? config.msg : PING
+			msg: obj && typeof config.msg === STRING ? config.msg : PING,
 		};
 		this.initial = str ? [config, ...args] : [...args];
 		this.setMaxListeners(INT_0);
 	}
 
-	init (req, res) {
+	init(req, res) {
 		let id = INT_NEG_1;
-		const fn = arg => transmit(res, arg, ++id);
+		const fn = (arg) => transmit(res, arg, ++id);
 
 		if (req !== void 0) {
 			req.socket.setTimeout(INT_0);
@@ -56,7 +56,7 @@ export class EventSource extends EventEmitter {
 			this.on(DATA, fn);
 		}
 
-		this.initial.forEach(i => this.send(i));
+		this.initial.forEach((i) => this.send(i));
 
 		if (this.heartbeat.ms > INT_0) {
 			heartbeat(this);
@@ -65,13 +65,13 @@ export class EventSource extends EventEmitter {
 		return this;
 	}
 
-	send (data, event, id) {
-		this.emit(DATA, {data, event, id});
+	send(data, event, id) {
+		this.emit(DATA, { data, event, id });
 
 		return this;
 	}
 }
 
-export function eventsource (...args) {
+export function eventsource(...args) {
 	return new EventSource(...args);
 }
