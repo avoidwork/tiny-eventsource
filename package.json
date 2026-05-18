@@ -1,7 +1,7 @@
 {
   "name": "tiny-eventsource",
-  "version": "3.0.8",
-  "description": "Tiny EventSource simplifies server-sent events for API servers",
+  "version": "3.1.0",
+  "description": "Server-Sent Events (SSE) EventEmitter for streaming to HTTP clients",
   "source": "src/eventsource.js",
   "main": "dist/tiny-eventsource.cjs",
   "exports": {
@@ -32,7 +32,9 @@
   "keywords": [
     "eventsource",
     "sse",
-    "push"
+    "server-sent-events",
+    "events",
+    "streaming"
   ],
     "files": [
         "dist",
