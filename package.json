@@ -34,10 +34,10 @@
     "sse",
     "push"
   ],
-  "files": [
-    "dist",
-    "types"
-  ],
+    "files": [
+        "dist",
+        "types/eventsource.d.ts"
+    ],
   "author": "Jason Mulligan <jason.mulligan@avoidwork.com>",
   "license": "BSD-3-Clause",
   "bugs": {
