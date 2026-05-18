@@ -1,12 +1,16 @@
 import { EventEmitter } from "node:events";
-import { heartbeat } from "./heartbeat.js";
-import { transmit } from "./transmit.js";
 import {
 	CACHE_CONTROL,
 	CLOSE,
 	CONNECTION,
 	CONTENT_TYPE,
 	DATA,
+	DATA_MSG,
+	DATA_TOKEN,
+	EVENT_MSG,
+	EVENT_TOKEN,
+	ID_MSG,
+	ID_TOKEN,
 	INT_0,
 	INT_200,
 	INT_NEG_1,
@@ -14,12 +18,15 @@ import {
 	MESSAGE,
 	NO_STORE_MAX_AGE_0,
 	NUMBER,
+	OBJECT,
 	PING,
 	STRING,
 	TEXT_EVENT_STREAM,
 } from "./constants.js";
 
 export class EventSource extends EventEmitter {
+	#heartbeatTimeout = null;
+
 	constructor(config, ...args) {
 		const str = typeof config === STRING,
 			obj = !str && config !== void 0 && config instanceof Object;
@@ -31,12 +38,13 @@ export class EventSource extends EventEmitter {
 			msg: obj && typeof config.msg === STRING ? config.msg : PING,
 		};
 		this.initial = str ? [config, ...args] : [...args];
+		this.#heartbeatTimeout = null;
 		this.setMaxListeners(INT_0);
 	}
 
 	init(req, res) {
 		let id = INT_NEG_1;
-		const fn = (arg) => transmit(res, arg, ++id);
+		const fn = (arg) => this.#transmit(res, arg, ++id);
 
 		if (req !== void 0) {
 			req.socket.setTimeout(INT_0);
@@ -59,14 +67,50 @@ export class EventSource extends EventEmitter {
 		this.initial.forEach((i) => this.send(i));
 
 		if (this.heartbeat.ms > INT_0) {
-			heartbeat(this);
+			this.#startHeartbeat();
 		}
 
 		return this;
 	}
 
+	#startHeartbeat() {
+		this.#heartbeatTimeout = setTimeout(() => {
+			if (this.listenerCount(DATA) > 0) {
+				this.send(this.heartbeat.msg, this.heartbeat.event);
+			}
+			if (this.heartbeat.ms > INT_0) {
+				this.#heartbeatTimeout = null;
+				this.#startHeartbeat();
+			}
+		}, this.heartbeat.ms);
+	}
+
+	#transmit(res, arg, id) {
+		res.write(ID_MSG.replace(ID_TOKEN, id));
+
+		if (arg.event !== void 0) {
+			res.write(EVENT_MSG.replace(EVENT_TOKEN, arg.event));
+		}
+
+		res.write(
+			DATA_MSG.replace(
+				DATA_TOKEN,
+				typeof arg.data === OBJECT ? JSON.stringify(arg.data) : arg.data,
+			),
+		);
+	}
+
 	send(data, event, id) {
 		this.emit(DATA, { data, event, id });
+
+		return this;
+	}
+
+	stop() {
+		if (this.#heartbeatTimeout !== null) {
+			clearTimeout(this.#heartbeatTimeout);
+			this.#heartbeatTimeout = null;
+		}
 
 		return this;
 	}
