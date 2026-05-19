@@ -3,7 +3,7 @@
  *
  * @copyright 2026 Jason Mulligan <jason.mulligan@avoidwork.com>
  * @license BSD-3-Clause
- * @version 3.1.1
+ * @version 3.1.2
  */
 import {EventEmitter}from'node:events';const DATA = "data";
 const ID_MSG = "id: %ID\n";
@@ -54,6 +54,7 @@ const CLOSE = "close";class EventSource extends EventEmitter {
 			req.socket.setKeepAlive(true);
 			req.on(CLOSE, () => {
 				this.off(DATA, fn);
+				this.stop();
 				this.emit(CLOSE);
 			});
 		}

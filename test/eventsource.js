@@ -123,12 +123,56 @@ describe("Testing functionality", function () {
 		assert.equal(ret, this.eventsource, "stop() should return this");
 	});
 
-	it("repeated stop() calls are safe", function () {
-		this.eventsource = eventsource({ms: 0});
-		assert.doesNotThrow(() => {
-			this.eventsource.stop();
-			this.eventsource.stop();
-			this.eventsource.stop();
+		it("repeated stop() calls are safe", function () {
+			this.eventsource = eventsource({ms: 0});
+			assert.doesNotThrow(() => {
+				this.eventsource.stop();
+				this.eventsource.stop();
+				this.eventsource.stop();
+			});
+		});
+
+		it("CLOSE event stops heartbeat — no ping after disconnect", function (done) {
+			this.ms = 250;
+			const req = {
+				handlers: {},
+				on: (arg, fn) => {
+					req.handlers[arg] = fn;
+				},
+				socket: {
+					setTimeout: () => void 0,
+					setNoDelay: () => void 0,
+					setKeepAlive: () => void 0
+				}
+			};
+			const res = {
+				statusCode: 0,
+				headers: {},
+				setHeader: (key, value) => {
+					res.headers[key] = value;
+				},
+				write: () => void 0
+			};
+			this.eventsource = eventsource({ms: this.ms}, "Hello World!");
+			this.eventsource.init(req, res);
+			let pingCount = 0;
+
+			this.eventsource.on("data", () => {
+				pingCount++;
+			});
+
+			// Wait for first ping to confirm heartbeat is running
+			setTimeout(() => {
+				assert.ok(pingCount >= 1, "Should have received at least one ping");
+				// Simulate client disconnect by triggering CLOSE handler
+				req.handlers.close();
+				// Wait another heartbeat interval — no more pings should arrive
+				setTimeout(() => {
+					const finalCount = pingCount;
+					assert.equal(pingCount, finalCount, "Should not receive more pings after disconnect");
+					this.eventsource.removeAllListeners("data");
+					done();
+				}, this.ms + 100);
+			}, this.ms + 10);
 		});
 	});
-});
