@@ -94,7 +94,7 @@ tiny-eventsource/
 
 ### 3.2 Style
 
-- Use 2 spaces for indentation. No tabs. No hard line length limit enforced by ESLint.
+- Use 2 spaces for indentation. No tabs. No hard line length limit.
 - Use `import`/`export` (ES module syntax). CommonJS only from rollup.
 - Public functions and the EventSource class must be well-documented via JSDoc.
 - Private functions prefixed with `_`.
@@ -197,11 +197,11 @@ If a `.github/PULL_REQUEST_TEMPLATE.md` file exists, it MUST be used when creati
 
 ### 6.1 Coverage
 
-The goal is **100% code coverage** via `nyc`. Every new function or class needs test coverage.
+The goal is **100% code coverage** via `node --test --experimental-test-coverage`. Every new function or class needs test coverage.
 
 ```bash
-npm run mocha            # Run tests with nyc
-nyc report --reporter=text --check-coverage  # Verify coverage
+npm test         # Run tests with --experimental-test-coverage (via npm script)
+node --test --check-coverage tests/**/*.js  # Verify coverage
 ```
 
 ### 6.2 Build Pipeline
