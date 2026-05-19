@@ -16,6 +16,7 @@ const esmOutBase = { ...defaultOutBase, format: "esm" };
 export default [
 	{
 		input: "./src/eventsource.js",
+		external: ["node:events"],
 		output: [
 			{
 				...cjOutBase,
