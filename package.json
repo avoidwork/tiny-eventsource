@@ -47,7 +47,7 @@
   },
   "homepage": "https://github.com/avoidwork/tiny-eventsource#readme",
   "devDependencies": {
-    "auto-changelog": "2.5.1",
+    "auto-changelog": "2.6.0",
     "husky": "9.1.7",
     "oxfmt": "^0.52.0",
     "oxlint": "^1.65.0",
